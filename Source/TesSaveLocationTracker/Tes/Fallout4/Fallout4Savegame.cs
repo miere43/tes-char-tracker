@@ -27,7 +27,7 @@ namespace TesSaveLocationTracker.Tes.Fallout4
                 string charName = reader.ReadUTF8WString(); // "HONEY"
                 uint playerLevel = reader.ReadUInt32(); // 1
                 string playerLocation = reader.ReadUTF8WString(); // "Commonwealth"
-                string gameDate = reader.ReadWString(); // 0d.0h.8m.0 days.0 hours.8 minutes"
+                string gameDate = reader.ReadUTF8WString(); // 0d.0h.8m.0 days.0 hours.8 minutes"
 
                 string playerRaceEditorId = reader.ReadWString(); // HumanRace
                 ushort playerSex = reader.ReadUInt16(); // 1 - female, 0 - male
