@@ -34,6 +34,8 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
         public double CellSize { get; set; }
 
+        public TesGameData GameData { get; set; }
+
         public TesSavegameRenderer(IList<Brush> brushes)
         {
             if (brushes == null)
@@ -53,8 +55,11 @@ namespace TesSaveLocationTracker.Tes.Renderer
             return DrawBrushes[index];
         }
 
-        public Graphics Render(Image fullSkyrimMap, IEnumerable<TesSavegame> saves)
+        public Graphics Render(Image fullGameMap, IEnumerable<TesSavegame> saves)
         {
+            if (GameData == null)
+                throw new ArgumentNullException("GameData property is not set.");
+
             var groupedSaves = saves.GroupBy((save) => save.CharacterName);
 
             // see index++
@@ -72,12 +77,12 @@ namespace TesSaveLocationTracker.Tes.Renderer
             float posCircleRadius = this.DrawCircleRadius;
             float firstPosCircleRadius = this.FirstDrawCircleRadius;
 
-            int mapWidth = fullSkyrimMap.Width;
-            int mapHeight = fullSkyrimMap.Height;
+            int mapWidth = fullGameMap.Width;
+            int mapHeight = fullGameMap.Height;
             double pixelsPerCellX = (double)mapWidth / TotalCellsX;
             double pixelsPerCellY = (double)mapHeight / TotalCellsY;
 
-            Graphics graphics = Graphics.FromImage(fullSkyrimMap);
+            Graphics graphics = Graphics.FromImage(fullGameMap);
             Font legendFont = new Font("Segoe UI", LegendFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
 
             GraphicsStringRenderer legend
@@ -87,7 +92,6 @@ namespace TesSaveLocationTracker.Tes.Renderer
             legend.NextX += 8;
             foreach (CharacterSaves charSaves in savesForChar)
             {
-                legend.DrawString(charSaves.Brush, String.IsNullOrWhiteSpace(charSaves.CharacterName) ? "No Name" : charSaves.CharacterName);
                 bool isFirstDraw = true;
                 float prevX = 0.0f;
                 float prevY = 0.0f;
@@ -95,6 +99,15 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
                 foreach (TesSavegame savegame in charSaves.Saves)
                 {
+                    if (!GameData.IsInDefaultWorldspace(
+                        savegame.Worldspace1.FormID,
+                        savegame.Worldspace2.FormID))
+                    {
+                        // Player was in interior or in foreign worldspace,
+                        // so skip it.
+                        continue;
+                    }
+
                     double cellX = savegame.X / CellSize;
                     double cellY = savegame.Y / CellSize;
 
@@ -126,6 +139,13 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
                     prevX = (float)x;
                     prevY = (float)y;
+                }
+
+                // Drawn at least once
+                if (!isFirstDraw)
+                {
+                    legend.DrawString(charSaves.Brush, 
+                        String.IsNullOrWhiteSpace(charSaves.CharacterName) ? "No Name" : charSaves.CharacterName);
                 }
             }
 

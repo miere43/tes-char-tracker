@@ -101,6 +101,7 @@ namespace TesSaveLocationTracker
             renderer.FirstDrawCircleRadius = 5.0f;
             renderer.LegendX = 1;
             renderer.LegendY = 1;
+            renderer.GameData = data;
 
             var graphics = renderer.Render(image, games);
 
