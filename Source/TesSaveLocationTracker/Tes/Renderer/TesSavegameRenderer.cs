@@ -6,20 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TesSaveLocationTracker.Tes.Skyrim;
 
-namespace TesSaveLocationTracker.Renderer
+namespace TesSaveLocationTracker.Tes.Renderer
 {
-    public struct CharacterSaves
+    public class TesSavegameRenderer
     {
-        public IEnumerable<SkyrimSavegame> Saves { get; set; }
-
-        public Brush Brush { get; set; }
-
-        public string CharacterName { get; set; }
-    }
-
-    public class SkyrimSavesRenderer
-    {
-        public List<Brush> DrawBrushes { get; protected set; }
+        public IList<Brush> DrawBrushes { get; protected set; }
 
         public float FirstDrawCircleRadius { get; set; }
 
@@ -33,7 +24,17 @@ namespace TesSaveLocationTracker.Renderer
 
         public int LegendFontSize { get; set; }
 
-        public SkyrimSavesRenderer(List<Brush> brushes)
+        public int CellOffsetX { get; set; }
+
+        public int CellOffsetY { get; set; }
+
+        public int TotalCellsX { get; set; }
+
+        public int TotalCellsY { get; set; }
+
+        public double CellSize { get; set; }
+
+        public TesSavegameRenderer(IList<Brush> brushes)
         {
             if (brushes == null)
                 throw new ArgumentNullException(nameof(brushes));
@@ -52,9 +53,9 @@ namespace TesSaveLocationTracker.Renderer
             return DrawBrushes[index];
         }
 
-        public Graphics Render(Image fullSkyrimMap, IEnumerable<SkyrimSavegame> saves)
+        public Graphics Render(Image fullSkyrimMap, IEnumerable<TesSavegame> saves)
         {
-            var groupedSaves = saves.GroupBy((save) => save.CharacterName.Normalize());
+            var groupedSaves = saves.GroupBy((save) => save.CharacterName);
 
             // see index++
             int index = 0;
@@ -63,7 +64,7 @@ namespace TesSaveLocationTracker.Renderer
                 return new CharacterSaves()
                 {
                     Saves = charSaves.OrderBy((sg) => sg.SaveNumber),
-                    CharacterName = saves.First().CharacterName,
+                    CharacterName = charSaves.First().CharacterName,
                     Brush = GetBrushByIndex(index++)
                 };
             });
@@ -71,16 +72,10 @@ namespace TesSaveLocationTracker.Renderer
             float posCircleRadius = this.DrawCircleRadius;
             float firstPosCircleRadius = this.FirstDrawCircleRadius;
 
-            const double cellSize = 4096.0d; // skyrim cell size
-            const int cellOffsetX = 74; // skyrim cell X starting from -74
-            const int cellOffsetY = 50; // from -50
-            const int cellsX = 74 + 75; // total cells X
-            const int cellsY = 50 + 49; // total cells Y
-
             int mapWidth = fullSkyrimMap.Width;
             int mapHeight = fullSkyrimMap.Height;
-            double pixelsPerCellX = (double)mapWidth / cellsX;
-            double pixelsPerCellY = (double)mapHeight / cellsY;
+            double pixelsPerCellX = (double)mapWidth / TotalCellsX;
+            double pixelsPerCellY = (double)mapHeight / TotalCellsY;
 
             Graphics graphics = Graphics.FromImage(fullSkyrimMap);
             Font legendFont = new Font("Segoe UI", LegendFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -92,19 +87,19 @@ namespace TesSaveLocationTracker.Renderer
             legend.NextX += 8;
             foreach (CharacterSaves charSaves in savesForChar)
             {
-                legend.DrawString(charSaves.Brush, charSaves.CharacterName);
+                legend.DrawString(charSaves.Brush, String.IsNullOrWhiteSpace(charSaves.CharacterName) ? "No Name" : charSaves.CharacterName);
                 bool isFirstDraw = true;
                 float prevX = 0.0f;
                 float prevY = 0.0f;
                 Pen linePen = new Pen(charSaves.Brush, 2f);
 
-                foreach (SkyrimSavegame savegame in charSaves.Saves)
+                foreach (TesSavegame savegame in charSaves.Saves)
                 {
-                    double cellX = savegame.X / cellSize;
-                    double cellY = savegame.Y / cellSize;
+                    double cellX = savegame.X / CellSize;
+                    double cellY = savegame.Y / CellSize;
 
-                    double x = pixelsPerCellX * (cellX + cellOffsetX);
-                    double y = (double)mapHeight - pixelsPerCellY * (cellY + cellOffsetY);
+                    double x = pixelsPerCellX * (cellX + CellOffsetX);
+                    double y = (double)mapHeight - pixelsPerCellY * (cellY + CellOffsetY);
 
                     if (isFirstDraw)
                     {

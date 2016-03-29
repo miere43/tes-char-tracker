@@ -48,14 +48,18 @@
     <Compile Include="Ini.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderer\SkyrimSavesRenderer.cs" />
+    <Compile Include="Tes\Renderer\CharacterSaves.cs" />
+    <Compile Include="Tes\Renderer\TesSavegameRenderer.cs" />
+    <Compile Include="Tes\Fallout4\Fallout4GameData.cs" />
     <Compile Include="Tes\Fallout4\Fallout4Savegame.cs" />
+    <Compile Include="Tes\Skyrim\SkyrimGameData.cs" />
+    <Compile Include="Tes\TesGameData.cs" />
     <Compile Include="Tes\RefID.cs" />
     <Compile Include="Tes\RefIDType.cs" />
+    <Compile Include="Tes\TesSavegame.cs" />
     <Compile Include="Tes\TesSavegameReader.cs" />
     <Compile Include="Tes\Skyrim\SkyrimSavegame.cs" />
-    <Compile Include="Renderer\GraphicsStringRenderer.cs" />
-    <Compile Include="Tes\TesUtility.cs" />
+    <Compile Include="Tes\Renderer\GraphicsStringRenderer.cs" />
     <Compile Include="Utility\AppSettings.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TesSaveLocationTracker.Renderer
+namespace TesSaveLocationTracker.Tes.Renderer
 {
     public class GraphicsStringRenderer
     {

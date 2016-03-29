@@ -14,73 +14,8 @@ namespace TesSaveLocationTracker.Tes.Skyrim
     /// <summary>
     /// Represent's Skyrim save file.
     /// </summary>
-    public class SkyrimSavegame
+    public class SkyrimSavegame : TesSavegame
     {
-        /// <summary>
-        /// Player X position in interior or worldspace (exterior).
-        /// </summary>
-        public float X { get; internal set; }
-
-        /// <summary>
-        /// Player Y position in interior or worldspace (exterior).
-        /// </summary>
-        public float Y { get; internal set; }
-
-        /// <summary>
-        /// Player Z position in interior or worldspace (exterior).
-        /// </summary>
-        public float Z { get; internal set; }
-
-        /// <summary>
-        /// Player worldspace (exterior) cell X. Interior's doesn't have cells.
-        /// </summary>
-        public int CellX { get; internal set; }
-
-        /// <summary>
-        /// Player worldspace (exterior) cell Y. Interior's doesn't have cells.
-        /// </summary>
-        public int CellY { get; internal set; }
-
-        /// <summary>
-        /// Save number.
-        /// </summary>
-        public int SaveNumber { get; internal set; }
-
-        /// <summary>
-        /// Player level.
-        /// </summary>
-        public int CharacterLevel { get; internal set; }
-
-        /// <summary>
-        /// Player-associated worldspace 1 RefID.
-        /// </summary>
-        public RefID Worldspace1 { get; internal set; }
-
-        /// <summary>
-        /// Player-associated worldspace 2 RefID.
-        /// </summary>
-        public RefID Worldspace2 { get; internal set; }
-
-        /// <summary>
-        /// Unique next savegame ID.
-        /// </summary>
-        public uint NextObjectID { get; internal set; }
-
-        /// <summary>
-        /// Player name.
-        /// </summary>
-        public string CharacterName { get; internal set; }
-
-        /// <summary>
-        /// Name of location where player currently at.
-        /// </summary>
-        public string CharacterLocationName { get; internal set; }
-
-        /// <summary>
-        /// Skyrim internal save date.
-        /// </summary>
-        public string SaveDate { get; internal set; }
-
         /// <summary>
         /// Gets a value indicating whether this instance is in Skyrim exterior worldspace.
         /// </summary>
@@ -112,10 +47,10 @@ namespace TesSaveLocationTracker.Tes.Skyrim
             using (var reader = new TesSavegameReader(input, Encoding.ASCII))
             {
                 byte[] magic = reader.ReadBytes(13);
-                // Debug.WriteLine($"magic: {Encoding.ASCII.GetString(magic)}");
+                if (Encoding.ASCII.GetString(magic) != "TESV_SAVEGAME")
+                    throw new ArgumentException(nameof(input) + " is not valid Skyrim savegame.");
 
                 uint headerSize = reader.ReadUInt32();
-                // Debug.WriteLine($"header size: {headerSize}");
 
                 uint saveVersion = reader.ReadUInt32();
                 uint saveNumber = reader.ReadUInt32();

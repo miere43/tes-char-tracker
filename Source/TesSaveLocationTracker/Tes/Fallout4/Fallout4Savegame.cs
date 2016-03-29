@@ -9,13 +9,16 @@ using System.Windows.Forms;
 
 namespace TesSaveLocationTracker.Tes.Fallout4
 {
-    public class Fallout4Savegame
+    public class Fallout4Savegame : TesSavegame
     {
         public static Fallout4Savegame Parse(Stream input)
         {
             using (var reader = new TesSavegameReader(input))
             {
                 byte[] magic = reader.ReadBytes(12); // FO4_SAVEGAME
+                if (Encoding.ASCII.GetString(magic) != "FO4_SAVEGAME")
+                    throw new ArgumentException(nameof(input) + " is not valid Fallout 4 savegame.");
+
                 uint headerSize = reader.ReadUInt32(); // 100
 
                 // HEADER
@@ -99,9 +102,24 @@ namespace TesSaveLocationTracker.Tes.Fallout4
                         break;
                     }
                 }
-            }
 
-            return new Fallout4Savegame();
+                return new Fallout4Savegame()
+                {
+                    X = posX,
+                    Y = posY,
+                    Z = posZ,
+                    SaveNumber = (int)saveNumber,
+                    SaveDate = gameDate,
+                    Worldspace1 = worldSpace1,
+                    Worldspace2 = worldSpace2,
+                    CellX = coorX,
+                    CellY = coorY,
+                    CharacterLevel = (int)playerLevel,
+                    CharacterName = charName,
+                    CharacterLocationName = playerLocation,
+                    NextObjectID = nextObjectId
+                };
+            }
         }
     }
 }
