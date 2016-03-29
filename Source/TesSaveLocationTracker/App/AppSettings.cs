@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,34 +15,35 @@ using System.Xml.Serialization;
 using TesSaveLocationTracker.Tes;
 using TesSaveLocationTracker.Tes.Skyrim;
 
-namespace TesSaveLocationTracker.Utility
+namespace TesSaveLocationTracker.App
 {
     [Serializable]
     public class AppSettings
     {
-        public float FirstDrawCircleRadius { get; private set; } = 8.0f;
+        public float FirstDrawCircleRadius { get; set; } = 9.0f;
 
-        public float DrawCircleRadius { get; private set; } = 5.0f;
+        public float DrawCircleRadius { get; set; } = 5.0f;
 
-        public string SkyrimSaveDir { get; private set; } = "";
+        public string SkyrimSaveDir { get; set; }
 
-        public string SkyrimMapFilePath  { get; private set; } = "skyrim-map.jpg";
+        public string SkyrimMapFilePath  { get; set; } = "Resources/skyrim-map.jpg";
 
-        public string Fallout4SaveDir { get; private set; } = "";
+        public string Fallout4SaveDir { get; set; }
 
-        public string Fallout4MapFilePath { get; private set; } = "fallout4-8-map.jpg";
+        public string Fallout4MapFilePath { get; set; } = "Resources/fallout4-8-map.jpg";
 
         private static List<string> DrawColorsDefault = new List<string>()
         {
-            "LightBlue",  "LightGreen", "LightPink", "LightCyan", "White"
+            "LightBlue",  "LightGreen", "LightPink", "LightCyan", "CornflowerBlue", "Orange"
         };
+
+        public string Game { get; set; } = "Fallout 4";
 
         public List<string> DrawColorsStrings
         {
             get
             {
                 List<string> s = new List<string>();
-
                 foreach (var color in DrawColors)
                 {
                     if (color.Color.IsNamedColor)
@@ -57,26 +59,23 @@ namespace TesSaveLocationTracker.Utility
             }
         }
 
+        public List<string> IgnoreCharacters = new List<string>(0);
+
         [NonSerialized]
         public List<SolidBrush> DrawColors = ParseBrushes(null, DrawColorsDefault, true);
 
-        private static CultureInfo invariantCulture;
-
-        private static IFormatProvider invariantNumberFormat;
-
-        private static Ini s;
-
         public AppSettings()
         {
-            invariantCulture = CultureInfo.InvariantCulture;
-            invariantNumberFormat = invariantCulture.NumberFormat;
         }
 
         public static AppSettings Load()
         {
             try
             {
-                var s = JObject.Parse(File.ReadAllText("settings.json")).ToObject<AppSettings>();
+                if (!File.Exists("settings.json"))
+                    return new AppSettings();
+
+                var s = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText("settings.json"));
                 if (!Directory.Exists(s.SkyrimSaveDir))
                 {
                     s.SkyrimSaveDir = (new SkyrimGameData()).GetGameSaveDirectory();
@@ -110,36 +109,14 @@ namespace TesSaveLocationTracker.Utility
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error during loading settings: " + e.Message);
+                MessageBox.Show("Using default settings because of error during loading settings: " + e.Message);
                 return new AppSettings();
             }
         }
 
         public void Save()
         {
-            File.WriteAllText("settings.json", JObject.FromObject(this).ToString());
-        }
-
-        private static float ParseFloat(float fallback, string value)
-        {
-            float val;
-            if (float.TryParse(value, NumberStyles.Float, invariantNumberFormat, out val))
-                return val;
-            return fallback;
-        }
-
-        private static string ParsePath(string fallback, string value)
-        {
-            if (Directory.Exists(value))
-                return value;
-            return fallback;
-        }
-        
-        private static string ParseFilePath(string fallback, string value)
-        {
-            if (File.Exists(value))
-                return value;
-            return fallback;
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
         private static List<SolidBrush> ParseBrushes(List<string> fallback, List<string> value, bool fallingBack = false)

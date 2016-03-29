@@ -45,6 +45,11 @@ namespace TesSaveLocationTracker.Tes.Fallout4
             };
         }
 
+        public override string GetSaveFileExtension()
+        {
+            return ".fos";
+        }
+
         public override bool IsInDefaultWorldspace(int ws1FormID, int ws2FormID)
         {
             return (ws1FormID == GetDefaultWorldspace1FormID()) &&

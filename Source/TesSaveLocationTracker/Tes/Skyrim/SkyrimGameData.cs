@@ -39,6 +39,11 @@ namespace TesSaveLocationTracker.Tes.Skyrim
             };
         }
 
+        public override string GetSaveFileExtension()
+        {
+            return ".ess";
+        }
+
         public override bool IsInDefaultWorldspace(int ws1FormID, int ws2FormID)
         {
             return (ws1FormID == GetDefaultWorldspace1FormID()) &&
