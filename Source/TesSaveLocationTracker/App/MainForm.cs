@@ -127,7 +127,7 @@ namespace TesSaveLocationTracker.App
             if (hasExt)
                 dialog.Filter = ext.Substring(1).ToUpper() + "|*" + ext + "|All files|*.*";
             else
-                dialog.Filter = "All files|*.*|";
+                dialog.Filter = "All files|*.*";
             dialog.CreatePrompt = true;
             dialog.Title = "Save tracked image as...";
             dialog.ShowDialog();
