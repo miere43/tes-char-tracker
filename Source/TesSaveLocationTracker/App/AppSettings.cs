@@ -20,9 +20,9 @@ namespace TesSaveLocationTracker.App
     [Serializable]
     public class AppSettings
     {
-        public float FirstDrawCircleRadius { get; set; } = 9.0f;
+        public float FirstDrawCircleRadius { get; set; } = 8.0f;
 
-        public float DrawCircleRadius { get; set; } = 5.0f;
+        public float DrawCircleRadius { get; set; } = 4.0f;
 
         public float LineSize { get; set; } = 2.0f;
 
