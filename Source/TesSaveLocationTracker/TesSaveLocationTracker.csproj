@@ -55,8 +55,8 @@
     <Compile Include="Tes\TesSavegameReader.cs" />
     <Compile Include="Tes\Skyrim\SkyrimSavegame.cs" />
     <Compile Include="Renderer\GraphicsStringRenderer.cs" />
+    <Compile Include="Tes\TesUtility.cs" />
     <Compile Include="Utility\AppSettings.cs" />
-    <Compile Include="Tes\Skyrim\SkyrimUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

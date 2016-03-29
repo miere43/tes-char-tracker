@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -51,6 +53,12 @@ namespace TesSaveLocationTracker.Tes
         {
             ushort length = this.ReadUInt16();
             return readWStringEncoding.GetString(this.ReadBytes(length));
+        }
+
+        public string ReadUTF8WString()
+        {
+            ushort length = this.ReadUInt16();
+            return Encoding.UTF8.GetString(this.ReadBytes(length));
         }
 
         /// <summary>

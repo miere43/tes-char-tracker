@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TesSaveLocationTracker.Renderer;
+using TesSaveLocationTracker.Tes;
+using TesSaveLocationTracker.Tes.Fallout4;
 using TesSaveLocationTracker.Tes.Skyrim;
 using TesSaveLocationTracker.Utility;
 
@@ -36,94 +38,128 @@ namespace TesSaveLocationTracker
         [STAThread]
         static int Main(string[] unused)
         {
-            if (!AppSettings.ParseDefault()) {
-                return -1;
-            }
+            //List<SkyrimSavegame> games = new List<SkyrimSavegame>();
+            //string[] saves = new[]
+            //{
+            //    "quicksave.ess",
+            //};
 
-            List<SkyrimSavegame> games = new List<SkyrimSavegame>();
-            foreach (var save in Directory.EnumerateFiles(AppSettings.SkyrimSaveDir, "*.ess"))
+            //foreach (var save in saves)
+            //{
+            //    if (save.EndsWith("quicksave.ess"))
+            //        continue;
+
+            //    using (var stream = File.OpenRead(TesUtility.GetSkyrimSaveDirectory() + "\\" + save))
+            //    {
+            //        games.Add(SkyrimSavegame.Parse(stream));
+            //    }
+            //}
+
+            List<Fallout4Savegame> games = new List<Fallout4Savegame>();
+            string[] saves = new[]
             {
-                //if (save.EndsWith("quicksave.ess"))
-                //    continue;
-
-                using (var stream = File.OpenRead(save))
-                {
-                    games.Add(SkyrimSavegame.Parse(stream));
-                }
-            }
-
-            var image = Image.FromFile(AppSettings.SkyrimMapFilePath);
-
-            var screen = Screen.PrimaryScreen.Bounds;
-            int formWidth  = image.Width > (screen.Width * 0.9) ? (int)(screen.Width * 0.9) : image.Width;
-            int formHeight = image.Height > (screen.Height * 0.9) ? (int)(screen.Height * 0.9) : image.Height;
-
-            Form form = new Form();
-            form.Text = "Skyrim Character Tracker";
-            form.Width = formWidth;
-            form.Height = formHeight;
-            form.AutoScroll = true;
-            form.MaximumSize = new Size(image.Width, image.Height);
-
-            PictureBox graphicsBox = new PictureBox();
-            var renderer = new SkyrimSavesRenderer(AppSettings.DrawColors)
-            {
-                DrawCircleRadius = AppSettings.DrawCircleRadius,
-                FirstDrawCircleRadius = AppSettings.FirstDrawCircleRadius,
-                LegendX = 1,
-                LegendY = 1,
+                "Save1_3FC7C231_484F4E4559_PrewarVault111_000010_20160325191816_1_2.fos",
+                "Save2_3FC7C231_484F4E4559_Vault111Cryo_000026_20160325194816_1_2.fos",
+                "Save3_3FC7C231_484F4E4559_Vault111Cryo_000027_20160325194820_1_2.fos",
             };
 
-            var graphics = renderer.Render(image, games);
-
-            Button saveToDiskButton = new Button();
-            saveToDiskButton.Text = "Save map";
-            saveToDiskButton.Width = 80;
-            saveToDiskButton.Height = 40;
-            saveToDiskButton.Location = new Point(10, (int)renderer.LegendEndY);
-
-            graphics.Flush();
-            graphics.Dispose();
-
-            graphicsBox.SizeMode = PictureBoxSizeMode.AutoSize;
-            graphicsBox.Image = image;
-            graphicsBox.Width = image.Width;
-            graphicsBox.Height = image.Height;
-
-            saveToDiskButton.Click += (sender, args) =>
+            foreach (var save in saves)
             {
-                SaveFileDialog dialog = new SaveFileDialog();
-                string ext = Path.GetExtension(AppSettings.SkyrimMapFilePath);
-                bool hasExt = ext != "";
-
-                dialog.FileName = Path.GetFileNameWithoutExtension(AppSettings.SkyrimMapFilePath)
-                    + "-tracked" + ext;
-                if (hasExt)
-                    dialog.Filter = ext.Substring(1).ToUpper() + "|*" + ext + "|All files|*.*";
-                else
-                    dialog.Filter = "All files|*.*";
-                dialog.CreatePrompt = true;
-                dialog.Title = "Save tracked image as...";
-                dialog.ShowDialog();
-
-                try
+                using (var stream = File.OpenRead(TesUtility.GetFallout4SaveDirectory() + "\\" + save))
                 {
-                    File.Create(dialog.FileName).Dispose();
-                    image.Save(dialog.FileName);
+                    games.Add(Fallout4Savegame.Parse(stream));
                 }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Cannot save image: " + e.Message);
-                }
-            };
-
-            form.Controls.Add(saveToDiskButton);
-            form.Controls.Add(graphicsBox);
-            form.ShowDialog();
-
-            AppSettings.Save();
-
+            }
             return 0;
+
+            //if (!AppSettings.ParseDefault()) {
+            //    return -1;
+            //}
+
+            //List<SkyrimSavegame> games = new List<SkyrimSavegame>();
+            //foreach (var save in Directory.EnumerateFiles(AppSettings.SkyrimSaveDir, "*.ess"))
+            //{
+            //    //if (save.EndsWith("quicksave.ess"))
+            //    //    continue;
+
+            //    using (var stream = File.OpenRead(save))
+            //    {
+            //        games.Add(SkyrimSavegame.Parse(stream));
+            //    }
+            //}
+
+            //var image = Image.FromFile(AppSettings.SkyrimMapFilePath);
+
+            //var screen = Screen.PrimaryScreen.Bounds;
+            //int formWidth  = image.Width > (screen.Width * 0.9) ? (int)(screen.Width * 0.9) : image.Width;
+            //int formHeight = image.Height > (screen.Height * 0.9) ? (int)(screen.Height * 0.9) : image.Height;
+
+            //Form form = new Form();
+            //form.Text = "Skyrim Character Tracker";
+            //form.Width = formWidth;
+            //form.Height = formHeight;
+            //form.AutoScroll = true;
+            //form.MaximumSize = new Size(image.Width, image.Height);
+
+            //PictureBox graphicsBox = new PictureBox();
+            //var renderer = new SkyrimSavesRenderer(AppSettings.DrawColors)
+            //{
+            //    DrawCircleRadius = AppSettings.DrawCircleRadius,
+            //    FirstDrawCircleRadius = AppSettings.FirstDrawCircleRadius,
+            //    LegendX = 1,
+            //    LegendY = 1,
+            //};
+
+            //var graphics = renderer.Render(image, games);
+
+            //Button saveToDiskButton = new Button();
+            //saveToDiskButton.Text = "Save map";
+            //saveToDiskButton.Width = 80;
+            //saveToDiskButton.Height = 40;
+            //saveToDiskButton.Location = new Point(10, (int)renderer.LegendEndY);
+
+            //graphics.Flush();
+            //graphics.Dispose();
+
+            //graphicsBox.SizeMode = PictureBoxSizeMode.AutoSize;
+            //graphicsBox.Image = image;
+            //graphicsBox.Width = image.Width;
+            //graphicsBox.Height = image.Height;
+
+            //saveToDiskButton.Click += (sender, args) =>
+            //{
+            //    SaveFileDialog dialog = new SaveFileDialog();
+            //    string ext = Path.GetExtension(AppSettings.SkyrimMapFilePath);
+            //    bool hasExt = ext != "";
+
+            //    dialog.FileName = Path.GetFileNameWithoutExtension(AppSettings.SkyrimMapFilePath)
+            //        + "-tracked" + ext;
+            //    if (hasExt)
+            //        dialog.Filter = ext.Substring(1).ToUpper() + "|*" + ext + "|All files|*.*";
+            //    else
+            //        dialog.Filter = "All files|*.*";
+            //    dialog.CreatePrompt = true;
+            //    dialog.Title = "Save tracked image as...";
+            //    dialog.ShowDialog();
+
+            //    try
+            //    {
+            //        File.Create(dialog.FileName).Dispose();
+            //        image.Save(dialog.FileName);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        MessageBox.Show("Cannot save image: " + e.Message);
+            //    }
+            //};
+
+            //form.Controls.Add(saveToDiskButton);
+            //form.Controls.Add(graphicsBox);
+            //form.ShowDialog();
+
+            //AppSettings.Save();
+
+            //return 0;
         }
 
         private static ImageCodecInfo GetEncoderForExtension(string ext)

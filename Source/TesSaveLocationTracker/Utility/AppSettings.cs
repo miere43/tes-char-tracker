@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TesSaveLocationTracker.Tes;
 using TesSaveLocationTracker.Tes.Skyrim;
 
 namespace TesSaveLocationTracker.Utility
@@ -77,7 +78,7 @@ namespace TesSaveLocationTracker.Utility
             SkyrimSaveDir = ParsePath(SkyrimSaveDirDefault, s.GetValue(SkyrimSaveDirKey));
             if (SkyrimSaveDir.Trim() == SkyrimSaveDirDefault)
             {
-                SkyrimSaveDir = SkyrimUtility.GetSkyrimSaveDirectory();
+                SkyrimSaveDir = TesUtility.GetSkyrimSaveDirectory();
                 if (!Directory.Exists(SkyrimSaveDir))
                 {
                     MessageBox.Show("Cannot find Skyrim save directory or read it from settings file. Set "

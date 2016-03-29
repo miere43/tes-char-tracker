@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TesSaveLocationTracker.Tes.Skyrim
 {
@@ -87,6 +89,22 @@ namespace TesSaveLocationTracker.Tes.Skyrim
                 return Worldspace1.FormID == 0x0000003c &&
                     Worldspace2.FormID == 0x0000003c;
             }
+        }
+
+        private static Image ReadScreenshot(BinaryReader reader)
+        {
+            int width = (int)reader.ReadUInt32();
+            int height = (int)reader.ReadUInt32();
+            Bitmap bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    byte[] pixels = reader.ReadBytes(3);
+                    bitmap.SetPixel(x, y, Color.FromArgb(pixels[0], pixels[1], pixels[2]));
+                }
+            }
+            return bitmap;
         }
 
         public static SkyrimSavegame Parse(Stream input)
