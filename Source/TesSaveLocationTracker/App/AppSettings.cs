@@ -51,25 +51,7 @@ namespace TesSaveLocationTracker.App
 
         public string Game { get; set; } = "Fallout 4";
 
-        public List<string> DrawColorsStrings
-        {
-            get
-            {
-                List<string> s = new List<string>();
-                foreach (var color in DrawColors)
-                {
-                    if (color.Color.IsNamedColor)
-                        s.Add(color.Color.Name);
-                    else
-                        s.Add(Convert.ToString(color.Color.ToArgb(), 16).Substring(2));
-                }
-                return s;
-            }
-            set
-            {
-                DrawColors = ParseBrushes(DrawColorsDefault, value, false);
-            }
-        }
+        public List<string> DrawColorsStrings { get; set; } = new List<string>(0);
 
         public List<string> IgnoreCharacters = new List<string>(0);
 
@@ -90,6 +72,13 @@ namespace TesSaveLocationTracker.App
                 var s = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText("settings.json"));
                 if (s == null)
                     throw new ArgumentException("Settings file is not valid (probably empty)");
+
+                if (s.DrawColorsStrings.Count == 0)
+                {
+                    s.DrawColorsStrings = DrawColorsDefault;
+                }
+
+                s.DrawColors = ParseBrushes(DrawColorsDefault, s.DrawColorsStrings, false);
 
                 if (!Directory.Exists(s.SkyrimSaveDir))
                 {
