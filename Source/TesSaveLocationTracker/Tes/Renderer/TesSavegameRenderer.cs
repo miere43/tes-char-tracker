@@ -10,7 +10,7 @@ namespace TesSaveLocationTracker.Tes.Renderer
 {
     public class TesSavegameRenderer
     {
-        public IList<Brush> DrawBrushes { get; protected set; }
+        public IList<SolidBrush> DrawBrushes { get; protected set; }
 
         public float FirstDrawCircleRadius { get; set; }
 
@@ -36,7 +36,7 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
         public TesGameData GameData { get; set; }
 
-        public TesSavegameRenderer(IList<Brush> brushes)
+        public TesSavegameRenderer(IList<SolidBrush> brushes)
         {
             if (brushes == null)
                 throw new ArgumentNullException(nameof(brushes));

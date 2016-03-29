@@ -32,6 +32,8 @@ namespace TesSaveLocationTracker
         [STAThread]
         static int Main(string[] unused)
         {
+            var settings = AppSettings.Load();
+
             //string mapfile = "D:/skyrim-map.jpg";
             //List<SkyrimSavegame> games = new List<SkyrimSavegame>();
             //string[] saves = new[]
@@ -91,11 +93,7 @@ namespace TesSaveLocationTracker
             form.MaximumSize = new Size(image.Width, image.Height);
 
             PictureBox graphicsBox = new PictureBox();
-            var renderer = data.GetRenderer(new List<Brush>() {
-                Brushes.Aqua,
-                Brushes.Red,
-                Brushes.Yellow
-            });
+            var renderer = data.GetRenderer(settings.DrawColors);
 
             renderer.DrawCircleRadius = 8.0f;
             renderer.FirstDrawCircleRadius = 5.0f;
@@ -122,10 +120,10 @@ namespace TesSaveLocationTracker
             saveToDiskButton.Click += (sender, args) =>
             {
                 SaveFileDialog dialog = new SaveFileDialog();
-                string ext = Path.GetExtension(AppSettings.SkyrimMapFilePath);
+                string ext = Path.GetExtension(settings.SkyrimMapFilePath);
                 bool hasExt = ext != "";
 
-                dialog.FileName = Path.GetFileNameWithoutExtension(AppSettings.SkyrimMapFilePath)
+                dialog.FileName = Path.GetFileNameWithoutExtension(settings.SkyrimMapFilePath)
                     + "-tracked" + ext;
                 if (hasExt)
                     dialog.Filter = ext.Substring(1).ToUpper() + "|*" + ext + "|All files|*.*";
@@ -150,7 +148,7 @@ namespace TesSaveLocationTracker
             form.Controls.Add(graphicsBox);
             form.ShowDialog();
 
-            // AppSettings.Save();
+            settings.Save();
 
             return 0;
         }

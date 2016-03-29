@@ -33,7 +33,7 @@ namespace TesSaveLocationTracker.Tes.Fallout4
                 "\\My Games\\Fallout4\\Saves";
         }
 
-        public override TesSavegameRenderer GetRenderer(IList<Brush> brushes)
+        public override TesSavegameRenderer GetRenderer(IList<SolidBrush> brushes)
         {
             return new TesSavegameRenderer(brushes)
             {

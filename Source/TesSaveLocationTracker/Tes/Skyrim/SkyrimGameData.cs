@@ -27,7 +27,7 @@ namespace TesSaveLocationTracker.Tes.Skyrim
                 "\\My Games\\Skyrim\\Saves";
         }
 
-        public override TesSavegameRenderer GetRenderer(IList<Brush> brushes)
+        public override TesSavegameRenderer GetRenderer(IList<SolidBrush> brushes)
         {
             return new TesSavegameRenderer(brushes)
             {

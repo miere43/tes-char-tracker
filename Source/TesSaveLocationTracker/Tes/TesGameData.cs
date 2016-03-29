@@ -19,6 +19,6 @@ namespace TesSaveLocationTracker.Tes
 
         public abstract bool IsInDefaultWorldspace(int ws1FormID, int ws2FormID);
 
-        public abstract TesSavegameRenderer GetRenderer(IList<Brush> brushes);
+        public abstract TesSavegameRenderer GetRenderer(IList<SolidBrush> brushes);
     }
 }
