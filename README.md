@@ -5,6 +5,9 @@ Draws your Skyrim/Fallout 4 character movement map using save files. Works only 
 * [Fallout 4 - 3072x3072px](http://i.imgur.com/3ls2HeQ.jpg). This map is weird, but still a map.
 * [Skyrim - 3000x2000px](http://i.imgur.com/3d3I3S8.jpg).
 
+## Troubleshooting
+* If you have errors with reading saves, you should run application from administrator or copy saves to folder, where no admin rights required and change ```Fallout4SaveDir``` or ```SkyrimSaveDir``` in ```settings.json``` to this folder.
+
 ## Settings
 There is no GUI settings, so you have to edit ```settings.json``` in app. directory. TES Character Tracker uses [JSON](https://en.wikipedia.org/wiki/JSON) to handle it's settings.
 
@@ -57,7 +60,7 @@ Fallout 4 map to render things at. There are several maps in `Resources` folder,
 "LegendX": 1,
 "LegendY": 1,
 "LegendFontSize": 16,
-"LegendFontName": "Segoe UI"
+"LegendFontName": "Segoe UI",
 "LegendFontStyle": 0
 ```
 Legend settings. `LegendX` and `LegendY` specifies where it will be drawn on map. `LegendFontStyle` is font drawing style, valid values: `0` - regular, `1` - bold, `2` - italic, `4` - underline, `8` - strikeout. Sum values to combine styles.
