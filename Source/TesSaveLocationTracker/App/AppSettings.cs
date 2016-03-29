@@ -24,6 +24,8 @@ namespace TesSaveLocationTracker.App
 
         public float DrawCircleRadius { get; set; } = 5.0f;
 
+        public float LineSize { get; set; } = 2.0f;
+
         public string SkyrimSaveDir { get; set; }
 
         public string SkyrimMapFilePath  { get; set; } = "Resources/skyrim-map.jpg";
@@ -31,6 +33,16 @@ namespace TesSaveLocationTracker.App
         public string Fallout4SaveDir { get; set; }
 
         public string Fallout4MapFilePath { get; set; } = "Resources/fallout4-8-map.jpg";
+
+        public int LegendX { get; set; } = 1;
+
+        public int LegendY { get; set; } = 1;
+
+        public int LegendFontSize { get; set; } = 16;
+
+        public FontStyle LegendFontStyle { get; set; } = FontStyle.Regular;
+
+        public string LegendFontName { get; set; } = "Segoe UI";
 
         private static List<string> DrawColorsDefault = new List<string>()
         {
@@ -76,6 +88,9 @@ namespace TesSaveLocationTracker.App
                     return new AppSettings();
 
                 var s = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText("settings.json"));
+                if (s == null)
+                    throw new ArgumentException("Settings file is not valid (probably empty)");
+
                 if (!Directory.Exists(s.SkyrimSaveDir))
                 {
                     s.SkyrimSaveDir = (new SkyrimGameData()).GetGameSaveDirectory();

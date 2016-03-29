@@ -90,11 +90,15 @@ namespace TesSaveLocationTracker.App
 
             var renderer = gameData.GetRenderer(settings.DrawColors);
 
-            renderer.DrawCircleRadius = settings.DrawCircleRadius;
-            renderer.FirstDrawCircleRadius = settings.FirstDrawCircleRadius;
-            renderer.LegendX = 1;
-            renderer.LegendY = 1;
+            renderer.DrawCircleRadius = settings.DrawCircleRadius > 0 ? settings.DrawCircleRadius : 5.0f;
+            renderer.FirstDrawCircleRadius = settings.FirstDrawCircleRadius > 0 ? settings.FirstDrawCircleRadius : 8.0f;
+            renderer.LegendX = settings.LegendX;
+            renderer.LegendY = settings.LegendY;
+            renderer.LegendFontSize = settings.LegendFontSize > 0 ? settings.LegendFontSize : 16;
+            renderer.LegendFont = string.IsNullOrWhiteSpace(settings.LegendFontName) ? "Segoe UI" : settings.LegendFontName;
+            renderer.LegendFontStyle = settings.LegendFontStyle;
             renderer.GameData = gameData;
+            renderer.LineSize = settings.LineSize > 0 ? settings.LineSize : 2.0f;
 
             var graphics = renderer.Render(renderedImage, games);
 

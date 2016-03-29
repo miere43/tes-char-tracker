@@ -16,6 +16,8 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
         public float DrawCircleRadius { get; set; }
 
+        public float LineSize { get; set; }
+
         public float LegendX { get; set; }
 
         public float LegendY { get; set; }
@@ -34,6 +36,10 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
         public double CellSize { get; set; }
 
+        public string LegendFont { get; set; }
+
+        public FontStyle LegendFontStyle { get; set; }
+
         public TesGameData GameData { get; set; }
 
         public TesSavegameRenderer(IList<SolidBrush> brushes)
@@ -46,6 +52,10 @@ namespace TesSaveLocationTracker.Tes.Renderer
             this.LegendY = 1;
             this.FirstDrawCircleRadius = 8.0f;
             this.DrawCircleRadius = 5.0f;
+            this.LineSize = 2.0f;
+            this.LegendFontSize = 16;
+            this.LegendFont = "Segoe UI";
+            this.LegendFontStyle = FontStyle.Regular;
         }
 
         private Brush GetBrushByIndex(int index)
@@ -83,7 +93,7 @@ namespace TesSaveLocationTracker.Tes.Renderer
             double pixelsPerCellY = (double)mapHeight / TotalCellsY;
 
             Graphics graphics = Graphics.FromImage(fullGameMap);
-            Font legendFont = new Font("Segoe UI", LegendFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
+            Font legendFont = new Font(this.LegendFont, LegendFontSize, LegendFontStyle, GraphicsUnit.Pixel);
 
             GraphicsStringRenderer legend
                 = new GraphicsStringRenderer(graphics, legendFont, this.LegendX, this.LegendY);
@@ -95,7 +105,7 @@ namespace TesSaveLocationTracker.Tes.Renderer
                 bool isFirstDraw = true;
                 float prevX = 0.0f;
                 float prevY = 0.0f;
-                Pen linePen = new Pen(charSaves.Brush, 2f);
+                Pen linePen = new Pen(charSaves.Brush, this.LineSize);
 
                 foreach (TesSavegame savegame in charSaves.Saves)
                 {
