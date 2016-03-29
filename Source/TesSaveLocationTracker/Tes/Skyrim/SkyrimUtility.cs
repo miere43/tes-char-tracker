@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TesSaveLocationTracker.Utility
+namespace TesSaveLocationTracker.Tes.Skyrim
 {
     public static class SkyrimUtility
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TesSaveLocationTracker.Skyrim
+namespace TesSaveLocationTracker.Tes
 {
     /// <summary>
     /// Represent's three-byte sequence, which representing

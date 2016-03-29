@@ -49,12 +49,14 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Renderer\SkyrimSavesRenderer.cs" />
-    <Compile Include="Skyrim\RefID.cs" />
-    <Compile Include="Skyrim\RefIDType.cs" />
-    <Compile Include="Skyrim\SkyrimSavegame.cs" />
+    <Compile Include="Tes\Fallout4\Fallout4Savegame.cs" />
+    <Compile Include="Tes\RefID.cs" />
+    <Compile Include="Tes\RefIDType.cs" />
+    <Compile Include="Tes\TesSavegameReader.cs" />
+    <Compile Include="Tes\Skyrim\SkyrimSavegame.cs" />
     <Compile Include="Renderer\GraphicsStringRenderer.cs" />
     <Compile Include="Utility\AppSettings.cs" />
-    <Compile Include="Utility\SkyrimUtility.cs" />
+    <Compile Include="Tes\Skyrim\SkyrimUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

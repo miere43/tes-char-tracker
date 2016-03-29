@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TesSaveLocationTracker.Skyrim
+namespace TesSaveLocationTracker.Tes.Skyrim
 {
     /// <summary>
     /// Represent's Skyrim save file.
@@ -89,50 +89,9 @@ namespace TesSaveLocationTracker.Skyrim
             }
         }
 
-        private static Encoding readWStringEncoding;
-
-        static SkyrimSavegame()
+        public static SkyrimSavegame Parse(Stream input)
         {
-            try
-            {
-                // Get Windows-1252 encoding.
-                readWStringEncoding = Encoding.GetEncoding(1252);
-            }
-            catch (Exception e)
-            {
-                if (e.GetType() == typeof(NotSupportedException) ||
-                    e.GetType() == typeof(ArgumentException))
-                {
-                    readWStringEncoding = Encoding.ASCII;
-                }
-                else
-                {
-                    throw;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Reads the WString (length-prefixed Windows-1252 string).
-        /// </summary>
-        private static string ReadWString(BinaryReader reader)
-        {
-            ushort length = reader.ReadUInt16();
-            return readWStringEncoding.GetString(reader.ReadBytes(length));
-        }
-
-        private static RefID ReadRefID(BinaryReader reader)
-        {
-            return new RefID()
-            {
-                Bytes = reader.ReadBytes(3)
-            };
-        }
-
-
-        public static SkyrimSavegame Parse(Stream stream)
-        {
-            using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII, true))
+            using (var reader = new TesSavegameReader(input, Encoding.ASCII))
             {
                 byte[] magic = reader.ReadBytes(13);
                 // Debug.WriteLine($"magic: {Encoding.ASCII.GetString(magic)}");
@@ -142,13 +101,13 @@ namespace TesSaveLocationTracker.Skyrim
 
                 uint saveVersion = reader.ReadUInt32();
                 uint saveNumber = reader.ReadUInt32();
-                string charName = ReadWString(reader);
+                string charName = reader.ReadWString();
                 uint playerLevel = reader.ReadUInt32();
-                string playerLocation = ReadWString(reader);
-                string gameDate = ReadWString(reader);
+                string playerLocation = reader.ReadWString();
+                string gameDate = reader.ReadWString();
 
                 // playerRaceEditorId
-                ReadWString(reader);
+                reader.ReadWString();
                 // playerSex
                 reader.ReadUInt16();
                 // playerCurExp
@@ -164,7 +123,7 @@ namespace TesSaveLocationTracker.Skyrim
                 // Debug.WriteLine($"screenshot height: {screenHeight}");
 
                 // skip screenshot data
-                stream.Seek(3U * screenWidth * screenHeight, SeekOrigin.Current);
+                input.Seek(3U * screenWidth * screenHeight, SeekOrigin.Current);
 
                 byte gameVersion = reader.ReadByte();
                 // Debug.WriteLine($"game version: {gameVersion}");
@@ -173,7 +132,7 @@ namespace TesSaveLocationTracker.Skyrim
                 // Debug.WriteLine($"plugin info size: {pluginInfoSize}");
 
                 // skip plugin info
-                stream.Seek(pluginInfoSize, SeekOrigin.Current);
+                input.Seek(pluginInfoSize, SeekOrigin.Current);
 
                 // file location table
                 uint formIDArrayCountOffset = reader.ReadUInt32();
@@ -191,7 +150,7 @@ namespace TesSaveLocationTracker.Skyrim
                 // Debug.WriteLine($"table count: {globalDataTable1Count}");
 
                 // move to globaldatatable1
-                stream.Seek(globalDataTable1Offset, SeekOrigin.Begin);
+                input.Seek(globalDataTable1Offset, SeekOrigin.Begin);
 
                 UInt32 nextObjectId = 0;
                 RefID worldSpace1 = null;
@@ -209,15 +168,15 @@ namespace TesSaveLocationTracker.Skyrim
                     uint length = reader.ReadUInt32();
                     if (type != 1)
                     {
-                        stream.Seek(length, SeekOrigin.Current);
+                        input.Seek(length, SeekOrigin.Current);
                     }
                     else
                     {
                         nextObjectId = reader.ReadUInt32();
-                        worldSpace1 = ReadRefID(reader);
+                        worldSpace1 = reader.ReadRefID();
                         coorX = reader.ReadInt32();
                         coorY = reader.ReadInt32();
-                        worldSpace2 = ReadRefID(reader);
+                        worldSpace2 = reader.ReadRefID();
                         posX = reader.ReadSingle();
                         posY = reader.ReadSingle();
                         posZ = reader.ReadSingle();
@@ -227,7 +186,7 @@ namespace TesSaveLocationTracker.Skyrim
                 }
 
                 // weird code ahead
-                stream.Seek(formIDArrayCountOffset, SeekOrigin.Begin);
+                input.Seek(formIDArrayCountOffset, SeekOrigin.Begin);
                 uint formIDArrayCount = reader.ReadUInt32();
                 if (worldSpace1.Type == RefIDType.FormID)
                 {
@@ -243,7 +202,7 @@ namespace TesSaveLocationTracker.Skyrim
                         }
                 }
 
-                stream.Seek(formIDArrayCountOffset, SeekOrigin.Begin);
+                input.Seek(formIDArrayCountOffset, SeekOrigin.Begin);
                 reader.ReadUInt32();
                 if (worldSpace2.Type == RefIDType.FormID ||
                     worldSpace2.Type == RefIDType.Skyrim)

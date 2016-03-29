@@ -1,4 +1,4 @@
-﻿namespace TesSaveLocationTracker.Skyrim
+﻿namespace TesSaveLocationTracker.Tes
 {
     /// <summary>
     /// Save game RefID type.

@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TesSaveLocationTracker.Renderer;
-using TesSaveLocationTracker.Skyrim;
+using TesSaveLocationTracker.Tes.Skyrim;
 using TesSaveLocationTracker.Utility;
 
 namespace TesSaveLocationTracker

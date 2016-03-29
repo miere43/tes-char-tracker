@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TesSaveLocationTracker.Skyrim;
+using TesSaveLocationTracker.Tes.Skyrim;
 
 namespace TesSaveLocationTracker.Renderer
 {
