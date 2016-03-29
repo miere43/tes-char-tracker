@@ -48,7 +48,7 @@ namespace TesSaveLocationTracker
             //    }
             //}
 
-            string mapfile = "D:/Out.jpg";
+            string mapfile = "D:/fallout-16-map.jpg";
 
             Fallout4GameData data = new Fallout4GameData();
             var saves = Directory.EnumerateFiles(data.GetGameSaveDirectory() + "\\", "*.fos");
