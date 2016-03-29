@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace TesSaveLocationTracker.Tes.Renderer
@@ -15,6 +17,8 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
         public float StepSize { get; protected set; }
 
+        public Queue<Tuple<Brush, string>> strings;
+
         public GraphicsStringRenderer(Graphics graphics, Font font, float x, float y)
         {
             this.Graphics = graphics;
@@ -26,16 +30,30 @@ namespace TesSaveLocationTracker.Tes.Renderer
             StepSize = font.Size + 3;
             NextX = x;
             NextY = y;
+
+            strings = new Queue<Tuple<Brush, string>>();
         }
 
-        public void DrawString(Brush brush, string value)
+        public void PushString(Brush brush, string value)
         {
-            // shadow
-            Graphics.DrawString(value, Font, Brushes.Black, NextX + 1, NextY + 1);
-            // actual string
-            Graphics.DrawString(value, Font, brush, NextX, NextY);
+            strings.Enqueue(new Tuple<Brush, string>(brush, value));
 
-            NextY += StepSize;
+        }
+
+        public void Flush()
+        {
+            while (strings.Count > 0)
+            {
+                var stringInfo = strings.Dequeue();
+
+                // shadow
+                Graphics.DrawString(stringInfo.Item2, Font, Brushes.Black, NextX - 1, NextY - 1);
+                Graphics.DrawString(stringInfo.Item2, Font, Brushes.Black, NextX + 1, NextY + 1);
+                // actual string
+                Graphics.DrawString(stringInfo.Item2, Font, stringInfo.Item1, NextX, NextY);
+
+                NextY += StepSize;
+            }
         }
     }
 }

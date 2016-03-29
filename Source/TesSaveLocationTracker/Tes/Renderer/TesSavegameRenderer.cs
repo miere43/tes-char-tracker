@@ -98,7 +98,8 @@ namespace TesSaveLocationTracker.Tes.Renderer
             GraphicsStringRenderer legend
                 = new GraphicsStringRenderer(graphics, legendFont, this.LegendX, this.LegendY);
 
-            legend.DrawString(Brushes.White, "Legend: ");
+            legend.PushString(Brushes.White, "Legend: ");
+            legend.Flush();
             legend.NextX += 8;
             foreach (CharacterSaves charSaves in savesForChar)
             {
@@ -154,11 +155,12 @@ namespace TesSaveLocationTracker.Tes.Renderer
                 // Drawn at least once
                 if (!isFirstDraw)
                 {
-                    legend.DrawString(charSaves.Brush, 
+                    legend.PushString(charSaves.Brush, 
                         String.IsNullOrWhiteSpace(charSaves.CharacterName) ? "No Name" : charSaves.CharacterName);
                 }
             }
 
+            legend.Flush();
             LegendEndY = legend.NextY + 10;
             return graphics;
         }
