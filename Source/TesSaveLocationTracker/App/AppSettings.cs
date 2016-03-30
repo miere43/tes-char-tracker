@@ -30,6 +30,8 @@ namespace TesSaveLocationTracker.App
 
         public string SkyrimMapFilePath  { get; set; } = "Resources/skyrim-map.jpg";
 
+
+
         public string Fallout4SaveDir { get; set; }
 
         public string Fallout4MapFilePath { get; set; } = "Resources/fallout4-8-map.jpg";
@@ -57,6 +59,8 @@ namespace TesSaveLocationTracker.App
 
         [NonSerialized]
         public List<SolidBrush> DrawColors = ParseBrushes(null, DrawColorsDefault, true);
+
+        public string SkyrimInteriorDBFilePath { get; set; } = "Resources/tesv.skyrim.esm.interiordb";
 
         public AppSettings()
         {

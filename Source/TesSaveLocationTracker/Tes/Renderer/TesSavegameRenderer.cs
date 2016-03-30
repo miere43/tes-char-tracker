@@ -42,6 +42,8 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
         public TesGameData GameData { get; set; }
 
+        public InteriorDB InteriorDB { get; set; }
+
         public TesSavegameRenderer(IList<SolidBrush> brushes)
         {
             if (brushes == null)
@@ -110,20 +112,35 @@ namespace TesSaveLocationTracker.Tes.Renderer
 
                 foreach (TesSavegame savegame in charSaves.Saves)
                 {
+                    double worldspaceX;
+                    double worldspaceY;
+
                     if (!GameData.IsInDefaultWorldspace(
                         savegame.Worldspace1.FormID,
                         savegame.Worldspace2.FormID))
                     {
-                        // Player was in interior or in foreign worldspace,
-                        // so skip it.
-                        continue;
+                        var position = InteriorDB.GetInteriorPosition(savegame.Worldspace2.FormID);
+                        if (position == null)
+                        {
+                            // Player was in interior or in foreign worldspace,
+                            // so skip it.
+                            continue;
+                        }
+
+                        worldspaceX = position.Item1 / CellSize + CellOffsetX;
+                        worldspaceY = position.Item2 / CellSize + CellOffsetY;
+                    }
+                    else
+                    {
+                        double cellX = savegame.X / CellSize;
+                        double cellY = savegame.Y / CellSize;
+
+                        worldspaceX = cellX + CellOffsetX;
+                        worldspaceY = cellY + CellOffsetY;
                     }
 
-                    double cellX = savegame.X / CellSize;
-                    double cellY = savegame.Y / CellSize;
-
-                    double x = pixelsPerCellX * (cellX + CellOffsetX);
-                    double y = (double)mapHeight - pixelsPerCellY * (cellY + CellOffsetY);
+                    double x = pixelsPerCellX * worldspaceX;
+                    double y = (double)mapHeight - (pixelsPerCellY * worldspaceY);
 
                     if (isFirstDraw)
                     {

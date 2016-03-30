@@ -60,6 +60,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="InteriorDB.cs" />
     <Compile Include="Tes\Renderer\CharacterSaves.cs" />
     <Compile Include="Tes\Renderer\TesSavegameRenderer.cs" />
     <Compile Include="Tes\Fallout4\Fallout4GameData.cs" />
@@ -75,6 +76,10 @@
     <Compile Include="App\AppSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Resources\tesv.skyrim.esm.interiordb">
+      <Link>Resources\tesv.skyrim.esm.interiordb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>

@@ -37,7 +37,6 @@ namespace TesSaveLocationTracker.Tes.Renderer
         public void PushString(Brush brush, string value)
         {
             strings.Enqueue(new Tuple<Brush, string>(brush, value));
-
         }
 
         public void Flush()

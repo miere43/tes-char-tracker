@@ -39,6 +39,8 @@ namespace TesSaveLocationTracker.App
 
             string mapPath = null;
 
+            InteriorDB interiorDB = null;
+
             if (settings.Game.Trim() == "Fallout 4")
             {
                 gameData = new Fallout4GameData();
@@ -59,6 +61,8 @@ namespace TesSaveLocationTracker.App
             else if (settings.Game.Trim() == "Skyrim")
             {
                 gameData = new SkyrimGameData();
+                using (var stream = File.OpenRead(settings.SkyrimInteriorDBFilePath))
+                    interiorDB = InteriorDB.Parse(stream);
                 mapPath = settings.SkyrimMapFilePath;
                 savePaths = Directory.EnumerateFiles(gameData.GetGameSaveDirectory() + "\\", "*" + gameData.GetSaveFileExtension());
 
@@ -84,11 +88,12 @@ namespace TesSaveLocationTracker.App
             var screen = Screen.PrimaryScreen.Bounds;
             int formWidth = renderedImage.Width > (screen.Width * 0.9) ? (int)(screen.Width * 0.9) : renderedImage.Width;
             int formHeight = renderedImage.Height > (screen.Height * 0.9) ? (int)(screen.Height * 0.9) : renderedImage.Height;
-
-            this.Width = formWidth;
-            this.Height = formHeight;
+            this.Width = formWidth + SystemInformation.HorizontalScrollBarHeight * 2;
+            this.Height = formHeight + SystemInformation.VerticalScrollBarWidth * 2;
+            this.MaximumSize = new Size(Width, Height);
 
             var renderer = gameData.GetRenderer(settings.DrawColors);
+            renderer.InteriorDB = interiorDB;
 
             renderer.DrawCircleRadius = settings.DrawCircleRadius > 0 ? settings.DrawCircleRadius : 5.0f;
             renderer.FirstDrawCircleRadius = settings.FirstDrawCircleRadius > 0 ? settings.FirstDrawCircleRadius : 8.0f;
