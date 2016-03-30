@@ -119,11 +119,15 @@ namespace TesSaveLocationTracker.Tes.Renderer
                         savegame.Worldspace1.FormID,
                         savegame.Worldspace2.FormID))
                     {
+                        // No interior info present.
+                        if (InteriorDB == null)
+                            continue;
+
                         var position = InteriorDB.GetInteriorPosition(savegame.Worldspace2.FormID);
                         if (position == null)
                         {
-                            // Player was in interior or in foreign worldspace,
-                            // so skip it.
+                            // Player was in foreign worldspace or in foreign
+                            // worldspace interior, so skip it.
                             continue;
                         }
 

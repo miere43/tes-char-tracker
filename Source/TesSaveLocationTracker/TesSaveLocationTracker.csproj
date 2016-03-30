@@ -76,6 +76,10 @@
     <Compile Include="App\AppSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Resources\Fallout4.Fallout4.esm.interiordb">
+      <Link>Resources\Fallout4.Fallout4.esm.interiordb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\Resources\tesv.skyrim.esm.interiordb">
       <Link>Resources\tesv.skyrim.esm.interiordb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

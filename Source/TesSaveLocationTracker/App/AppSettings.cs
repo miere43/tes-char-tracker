@@ -62,6 +62,8 @@ namespace TesSaveLocationTracker.App
 
         public string SkyrimInteriorDBFilePath { get; set; } = "Resources/tesv.skyrim.esm.interiordb";
 
+        public string Fallout4InteriorDBFilePath { get; set; } = "Resources/Fallout4.Fallout4.esm.interiordb";
+
         public AppSettings()
         {
         }

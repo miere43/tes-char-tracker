@@ -45,6 +45,8 @@ namespace TesSaveLocationTracker.App
             {
                 gameData = new Fallout4GameData();
                 mapPath = settings.Fallout4MapFilePath;
+                using (var stream = File.OpenRead(settings.Fallout4InteriorDBFilePath))
+                    interiorDB = InteriorDB.Parse(stream);
                 savePaths = Directory.EnumerateFiles(gameData.GetGameSaveDirectory() + "\\", "*" + gameData.GetSaveFileExtension());
 
                 foreach (var savePath in savePaths)
